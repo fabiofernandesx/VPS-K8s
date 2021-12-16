@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-site-service
+  namespace: demo-site
+spec:
+  selector:
+    app: demo-site
+  ports:
+    - protocol: TCP
+      port: 80

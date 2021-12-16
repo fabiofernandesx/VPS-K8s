@@ -1,0 +1,17 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: demo-site-ingress-secure
+  namespace: demo-site
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`demo.ff1.dev`)
+      kind: Rule
+      services:
+        - name: demo-site-service
+          namespace: demo-site
+          port: 80
+  tls:
+    secretName: demo-ff1-dev-tls
