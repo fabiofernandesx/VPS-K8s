@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wordpress-ff1-dev
+  namespace: demo-wordpress
+spec:
+  secretName: wordpress-ff1-dev-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - wordpress.ff1.dev
+
+    

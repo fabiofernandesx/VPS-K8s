@@ -1,0 +1,18 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: demo-wordpress-ingress-secure
+  namespace: demo-wordpress
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`wordpress.ff1.dev`)
+      kind: Rule
+      services:
+        - name: demo-wordpress-service
+          namespace: demo-wordpress
+          port: 80
+  tls:
+    secretName: wordpress-ff1-dev-tls
+

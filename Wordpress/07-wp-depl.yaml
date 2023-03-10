@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-wordpress
+  namespace: demo-wordpress
+  labels:
+    app: demo-wordpress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo-wordpress
+  template:
+    metadata:
+      labels:
+        app: demo-wordpress
+    spec:
+      containers:
+        - name: demo-wordpress-container
+          image: wordpress:6.1.1
+          imagePullPolicy: IfNotPresent          
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              memory: '1Gi'
+              cpu: '1'
+          volumeMounts:
+            - name: wordpress-data
+              mountPath: /var/www/html/wp-content
+          env:
+            - name: WORDPRESS_DB_HOST
+              value: demo-mysql-service:3306
+            - name: WORDPRESS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wp-secrets
+                  key: MYSQL_ROOT_PASSWORD
+            - name: WORDPRESS_DB_USER
+              value: root
+            - name: WORDPRESS_DB_NAME
+              value: wordpress       
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/bash", "-c", "chown -R www-data:www-data /var/www; chmod -R 774 /var/www"]                        
+      volumes:
+        - name: wordpress-data
+          persistentVolumeClaim:
+            claimName: demo-wordpress-pvc
+
+
